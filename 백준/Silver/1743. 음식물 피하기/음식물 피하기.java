@@ -17,7 +17,7 @@ public class Main {
         N = sc.nextInt();
         M = sc.nextInt();
         K = sc.nextInt();
-
+        
 
         point = new  int[N][M];
         check = new boolean[N][M];
@@ -33,20 +33,16 @@ public class Main {
 
 
 
-        //확인
-//        for(int i=0; i<N; i++){
-//            for(int j=0; j<M; j++){
-//                System.out.print(point[i][j]);
-//            }
-//            System.out.println(" ");
-//        }
+        for(int i=0; i<N; i++){
+            for(int j=0; j<M; j++){
+                if(check[i][j]== false && point[i][j] ==1){
+                    len =0;
+                    bfss(i,j); // 연결트리 true 설정
+                    max = Math.max(len,max);
 
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if(!check[i][j] && point[i][j]==1) {
-                    len=0;
-                    bfss(i,j);
-                    max = Math.max(len, max);
+
+
+
                 }
             }
         }
