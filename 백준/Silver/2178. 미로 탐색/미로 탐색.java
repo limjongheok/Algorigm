@@ -1,87 +1,109 @@
-import  java.util.*;
-
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
 public class Main {
-    static int N;
-    static int M;
-    static boolean[][] check;
-    static int[] updonwn= new int[]{-1,0,1,0};
-    static int[] leftright = new int[]{0,-1,0,1};
 
-    static int[][] miro;
-    public static void main(String[] args){
-
-        Scanner sc = new Scanner(System.in);
-        N = sc.nextInt();
-        M= sc.nextInt();
-
-        check =new boolean[N][M];
+    static  char[][] miro;
+    static  boolean[][] visited;
+    static  int countMap[][];
+    static  int N;
+    static  int M;
 
 
-        miro = new int[N][M];
+    static  int[] dx = {0,1,0,-1};
+    static  int[] dy = {1,0,-1,0};
 
-        // create miro
-        for(int i=0; i<N; i++){
+    public static void main(String[] args) throws IOException {
 
-            String len = sc.next();
-            for(int j=0; j<M; j++){
-                miro[i][j] = len.charAt(j)-'0';
-            }
-        }
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
 
-        // check
-//
-//        for(int i=1; i<=N; i++){
-//            for(int j=1; j<=M; j++){
-//                System.out.print(miro[i][j]);
-//            }
-//            System.out.println(" ");
-//        }
-        
-        check[0][0] = true;
+        StringTokenizer st;
 
-        bfs(0,0);
-        System.out.println(miro[N-1][M-1]);
+         st= new StringTokenizer(bf.readLine());
+         N = Integer.parseInt(st.nextToken());
+         M = Integer.parseInt(st.nextToken());
+
+         miro = new char[N+1][M+1];
+         countMap = new int[N+1][M+1];
+
+         countMap[0][0] = 1;
+
+         visited = new boolean[N+1][M+1];
+
+         // 미로 작성
+         for(int i=0; i<N; i++){
+             String input = bf.readLine();
+             for(int j=0; j<M; j++){
+                 miro[i][j] = input.charAt(j);
+             }
+         }
+
+         bfs(0,0);
+
+         System.out.println(countMap[N-1][M-1]);
+
+
 
 
     }
-    public static void  bfs(int i,int j){
-        
+
+    public static void bfs(int x, int y){
+        // 0,0에서 시작
+        // queue 생성
         Queue<dot> queue = new LinkedList<>();
-        queue.add(new dot(i,j));
+        queue.add(new dot(x,y));
+        visited[x][y] = true;
+
         while (!queue.isEmpty()){
-            dot d = queue.poll();
+            dot dot = queue.poll();
+            //현재 x,y  봅기
+            int nowX  = dot.x;
+            int nowY = dot.y;
 
 
-            for(int k=0; k<4; k++){
-                int nextx = d.x+updonwn[k];
-                int nexty = d.y+leftright[k];
-                //System.out.println(updonwn[k]);
-                if(nextx <0 || nexty<0 || nextx>=N || nexty>=M ){
-                    continue;
+
+            // 상하 좌우 움직이기
+            for(int i=0; i<4; i++){
+                int moveX = nowX + dx[i];
+                int moveY = nowY +dy[i];
+
+                if(moveX>=0 && moveX<N){
+                    if(moveY>=0 && moveY<M){
+
+                        if(!visited[moveX][moveY] && miro[moveX][moveY] == '1'){
+
+                            visited[moveX][moveY] = true;
+                            queue.add(new dot(moveX,moveY));
+                            countMap[moveX][moveY] = countMap[nowX][nowY] +1 ;
+
+
+                        }
+
+                    }
                 }
-                // 방문 좌표거나 0일경우 건너 뛰기
-                if(check[nextx][nexty] || miro[nextx][nexty] == 0 ){
-                    continue;
-                }
-                
-                queue.add(new dot(nextx,nexty));
-                miro[nextx][nexty] = miro[d.x][d.y]+1;
-                check[nextx][nexty]= true;
-                
+
+
             }
+
+
 
         }
 
 
 
     }
-}
-class dot{
-    int x;
-    int y;
-    public dot(int x, int y){
-        this.x = x;
-        this.y =y;
+
+    protected static class  dot{
+        int x;
+        int y;
+
+        public dot(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
     }
 }
