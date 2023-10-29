@@ -2,113 +2,89 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class Main {
 
-    static  int count = 0 ;
-    static boolean[] check ;
-    static  int n;
-    static  int[][] arr;
+    static boolean[][] arrays;
+    static boolean[] visited;
+    static  int N;
+    static  int M;
+
 
     public static  void main(String[] args) throws IOException {
-
-        // 입력
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
-        st= new StringTokenizer(br.readLine());
-
-        n = Integer.parseInt(st.nextToken()); // 정점 개수
-        int m = Integer.parseInt(st.nextToken()); // 간선 개수
-
-        // System.out.println(m);  출력 확인
+        st = new StringTokenizer(bf.readLine());
 
 
-        //인접 행렬을 통해 해결
-        // 정점은 총 n 개 있고  양방향 구래프 이니 (0 재외)n+1*n+1 개의 방이 있음
-        // 이 n*n의 배열은 전부 0 으로 되어 있고 양 끝점이 주어지면 만약  1 3 이 주어지면  배열[1][3]  [3][1]  = 1 로 채워줌
+        N = Integer.parseInt(st.nextToken());// 정점
+        M = Integer.parseInt(st.nextToken()); // 간선
 
+        arrays = new boolean[N+1][N+1];
+        visited = new boolean[N+1];
 
-        // 배열 생성
-        // 기본 타입 초기화는  초기값 0 참조 타입은 null
-
-        arr = new int[n+1][n+1];
-
-
-        // m줄에 걸쳐  양 끝점 u v  주어짐
-        for(int i=1; i<=m; i++){
-            st= new StringTokenizer(br.readLine());
+        // 간선을 이용해서 행렬 만들기
+        for(int i=0; i<M; i++){
+            st = new StringTokenizer(bf.readLine());
             int u = Integer.parseInt(st.nextToken());
             int v = Integer.parseInt(st.nextToken());
-
-
-
-           // 양 끝점이 주어지면 만약  1 3 이 주어지면  배열[1][3]  [3][1]  = 1 로 채워줌
-            arr[u][v] = 1;
-            arr[v][u] = 1;
-
+            arrays[u][v] = true;
+            arrays[v][u] = true;
         }
+        int cnt = 0;
 
-//        for(int i =1; i<n+1 ; i++){
-////            for(int j =1; j<n+1; j++){
-////                System.out.print(arr[i][j]); // 확인 코드
-////            }
-////            System.out.println();
-////        } 확인
+        for(int i=1; i<N+1; i++){
+            if(!visited[i]){ // 노드에 방문 하지 않을시
+                visited[i] = true; // 노드에 방문해 주고
+                cnt ++;
+                dfs(i);
 
-
-
-
-        check = new boolean[n+1];
-
-
-
-        // 완전 탐색
-        for(int i=1; i<n+1; i++){
-            if(check[i]==false){
-                count = count +1;
-                bfs(i);
             }
+
         }
+        System.out.println(cnt);
 
 
-        System.out.println(count);
 
 
 
-        //arr 가 1 일시 bfs 시작하고 check  하고 count 증가
     }
 
-    public static void bfs(int x){
+    public static void dfs(int x){
+        // 해당 노드에 방문했음
+        // 그럼 인접 노드를 찾아야함
 
-        Queue<Integer> queue = new LinkedList();
-        check[x] = true;
-       // System.out.println(x + " " + y);
 
-        queue.add(x);
-        while(!queue.isEmpty()){
-            int py =  queue.poll();
-            //System.out.println(px+"px" + py + "py");
+        // 스택을 만들기
+        Stack<Integer> stack = new Stack<>();
+        stack.add(x);
 
-            for(int i=1; i<=n; i++){
-                if(check[i]!= true && arr[py][i] == 1){
-                    queue.offer(i);
-                    check[i] = true;
+        while(!stack.isEmpty()){
+            int stackPop = stack.pop();
+
+            for(int i=1; i<N+1; i++){ //정점 만큼 돌려서
+                if(!visited[i] && arrays[stackPop][i]){
+                    // 만약 방문을 안하고, 인접 노드일시
+                    visited[i] = true;
+                    stack.add(i); // [2, 5]   ,[4,6] ,
                 }
+
             }
 
 
 
 
-
-
         }
+
+
+
+
     }
+
+
 }
-
-
