@@ -24,7 +24,7 @@ class Main{
 
         while(start < end){
             int mid = (start+end)/2;
-            int sum = 0;
+            int sum = 1;
             int a = mid;
             for(int i=0; i<n; i++){
                 if(a<arr[i]){
@@ -36,7 +36,7 @@ class Main{
                 }
             }
 
-            if(sum < m){
+            if(sum <= m){
                 end = mid;
             }else{
                 start = mid+1;
