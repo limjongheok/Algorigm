@@ -1,60 +1,47 @@
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
-class Main{
-    private static boolean[] visited;
-    private static int[] arr;
-    private static int n;
+public class Main {
     private static int m;
+    private static int n;
+    private static boolean[] visited; // 중복 체크
+    private static StringBuilder sb = new StringBuilder();
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        n = Integer.parseInt(st.nextToken());
-        m = Integer.parseInt(st.nextToken());
-        arr = new int[m];
+         n = Integer.parseInt(st.nextToken());
+         m = Integer.parseInt(st.nextToken());
+         visited = new boolean[n];
 
-        visited = new boolean[n];
-
-
-        dfs(0,0);
-
-
-
+        int[] arr = new int[m];
+        re(0,arr,0);
+        System.out.print(sb);
     }
 
-    private static void dfs(int start,int r){
+    public static void re(int start, int[] arr, int pre){
         if(start == m){
-            for(int i=0; i<arr.length; i++){
-                System.out.print(arr[i]  + " ");
+            for(int i: arr){
+                sb.append(i + " ");
             }
-            System.out.println();
-            return ;
+            sb.append("\n");
+            return;
         }
-
 
         for(int i=0; i<n; i++){
-                if(!visited[i]){// 방문하지 않았을시
-                    //이전 노드 검사\
-                    //System.out.println(i + " " +r);
-                    if(i>=r){
-                        if(start <= i){
-                            visited[i] = true;
-                            arr[start] = i+1;
-                            dfs(start+1,i);
-                            visited[i] = false;
+            if(i>=pre){
+                if(!visited[i]){
+                    visited[i] = true;
+                    arr[start] = i+1;
+                    re(start+1,arr,i);
+                    visited[i] =false;
 
-                        }
-                    }
-
-
-
-
-
+                }
             }
 
-        }
 
+        }
     }
 }
