@@ -34,11 +34,7 @@ import java.io.*;
  */
 class Solution
 {
-	private static  int n;
-    private static int m;
-
-    private static char 방향 ;
-    public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
         InputClassification inputClassification = InputClassification.getInstance;
@@ -52,14 +48,14 @@ class Solution
 
             Tank tank = null;
             st = new StringTokenizer(br.readLine());
-            n = Integer.parseInt(st.nextToken());
-            m = Integer.parseInt(st.nextToken());
+            int n = Integer.parseInt(st.nextToken());
+            int m = Integer.parseInt(st.nextToken());
             Map map = new Map(n,m);
             // map 구현
             for(int i=0; i<n; i++){
-                String 입력 = br.readLine();
+                String inputAll = br.readLine();
                 for(int j=0; j<m; j++){
-                    char input = 입력.charAt(j);
+                    char input = inputAll.charAt(j);
 
                     Object o  =inputClassification.createObject(input,i,j);
 
@@ -72,15 +68,15 @@ class Solution
             }
 
 
-            int n = Integer.parseInt(br.readLine());
-            String 명령 = br.readLine();
-            for(int i=0; i<n; i++){
-                char order = 명령.charAt(i);
+            int orderNum = Integer.parseInt(br.readLine());
+            String orderAll = br.readLine();
+            for(int i=0; i<orderNum; i++){
+                char order = orderAll.charAt(i);
                 inputOrderClassification.command(order,tank,map);
 
             }
             StringBuilder sb = new StringBuilder();
-            sb.append("#"+tc+" ");
+            sb.append("#").append(tc).append(" ");
             for(int z=0; z< map.getMaxX(); z++){
                 for(int j=0; j<map.getMaxY(); j++){
                     sb.append(map.getMapObject(z,j));
@@ -110,21 +106,21 @@ class InputClassification{
     public Object createObject(char input, int x, int y){
         switch (input){
             case '.':
-                return   new Flat(x,y,input);
+                return   new Flat(x,y,Shape.flat);
             case '*':
-                return new BrickWall(x,y,input);
+                return new BrickWall(x,y,Shape.brickWall);
             case '#':
-                return new SteelWall(x,y,input);
+                return new SteelWall(x,y,Shape.steelWall);
             case '-':
-                return new Water(x,y,input);
+                return new Water(x,y,Shape.water);
             case'^':
-                return  new Tank(x,y,Direction.up,input);
+                return  new Tank(x,y,Direction.up,Direction.up);
             case 'v':
-                return new Tank(x,y,Direction.down,input);
+                return new Tank(x,y,Direction.down,Direction.down);
             case '>':
-                return new Tank(x,y,Direction.right,input);
+                return new Tank(x,y,Direction.right,Direction.right);
             case '<':
-                return new Tank(x,y,Direction.left,input);
+                return new Tank(x,y,Direction.left,Direction.left);
             default:
                 return null;
         }
@@ -168,7 +164,7 @@ class InputOrderClassification{
         tank.setDirection(Direction.up);
         if(nextX >=0){
             if(map.getMapObject(nextX,tank.getY()) instanceof Flat){
-                map.setMap(tank.getX(),tank.getY(),new Flat(tank.getX(),tank.getY(),'.')); // 현재 좌표 Flat로
+                map.setMap(tank.getX(),tank.getY(),new Flat(tank.getX(),tank.getY(),Shape.flat)); // 현재 좌표 Flat로
                 tank.setX(nextX);
                 map.setMap(nextX,tank.getY(),tank); // 다음좌표 탱크로
 
@@ -182,7 +178,7 @@ class InputOrderClassification{
         tank.setDirection(Direction.down);
         if(nextX <map.getMaxX()){
             if(map.getMapObject(nextX,tank.getY()) instanceof Flat){
-                map.setMap(tank.getX(),tank.getY(),new Flat(tank.getX(),tank.getY(),'.'));
+                map.setMap(tank.getX(),tank.getY(),new Flat(tank.getX(),tank.getY(),Shape.flat));
                 tank.setX(nextX);
                 map.setMap(nextX,tank.getY(),tank);
 
@@ -200,7 +196,7 @@ class InputOrderClassification{
         tank.setDirection(Direction.left);
         if(nextY >=0){
             if(map.getMapObject(tank.getX(),nextY) instanceof Flat){
-                map.setMap(tank.getX(),tank.getY(),new Flat(tank.getX(),tank.getY(),'.'));
+                map.setMap(tank.getX(),tank.getY(),new Flat(tank.getX(),tank.getY(),Shape.flat));
                 tank.setY(nextY);
                 map.setMap(tank.getX(),nextY,tank);
 
@@ -213,7 +209,7 @@ class InputOrderClassification{
         tank.setDirection(Direction.right);
         if(nextY <map.getMaxY()){
             if(map.getMapObject(tank.getX(),nextY) instanceof Flat){
-                map.setMap(tank.getX(),tank.getY(),new Flat(tank.getX(),tank.getY(),'.'));
+                map.setMap(tank.getX(),tank.getY(),new Flat(tank.getX(),tank.getY(),Shape.flat));
                 tank.setY(nextY);
                 map.setMap(tank.getX(),nextY,tank);
             }
@@ -245,7 +241,7 @@ class InputOrderClassification{
 
             Object object = map.getObject(x,y);
             if(object instanceof BrickWall){
-                map.setMap(x,y,new Flat(x,y,'.'));
+                map.setMap(x,y,new Flat(x,y,Shape.flat));
                 break;
             }
             if(object instanceof SteelWall){
@@ -265,7 +261,7 @@ class InputOrderClassification{
 
             Object object = map.getObject(x,y);
             if(object instanceof BrickWall){
-                map.setMap(x,y,new Flat(x,y,'.'));
+                map.setMap(x,y,new Flat(x,y,Shape.flat));
                 break;
             }
             if(object instanceof SteelWall){
@@ -285,7 +281,7 @@ class InputOrderClassification{
 
             Object object = map.getObject(x,y);
             if(object instanceof BrickWall){
-                map.setMap(x,y,new Flat(x,y,'.'));
+                map.setMap(x,y,new Flat(x,y,Shape.flat));
                 break;
             }
             if(object instanceof SteelWall){
@@ -304,7 +300,7 @@ class InputOrderClassification{
             Object object = map.getObject(x,y);
 
             if(object instanceof BrickWall){
-                map.setMap(x,y,new Flat(x,y,'.'));
+                map.setMap(x,y,new Flat(x,y,Shape.flat));
                 break;
             }
             if(object instanceof SteelWall){
@@ -324,16 +320,42 @@ class InputOrderClassification{
 }
 
 enum Direction{
+    up('^'),
+    down('v'),
+    left('<'),
+    right('>');
 
-    up,
-    down,
-    left,
-    right;
+    private final char shape;
+    Direction(char shape) {
+        this.shape = shape;
+    }
+    public char getShape() {
+        return shape;
+    }
+
+
+}
+
+enum Shape{
+    flat('.'),
+    brickWall('*'),
+    steelWall('#'),
+    water('-');
+
+    private final char shape;
+
+    Shape(char shape) {
+        this.shape = shape;
+    }
+
+    public char getShape() {
+        return shape;
+    }
 }
 
 class Map{
-    private int maxX;
-    private int maxY;
+    private final int maxX;
+    private final int maxY;
     Object map[][];
     public  Map(int x, int y){
         this.map = new Object[x][y];
@@ -369,31 +391,27 @@ class  Object{
 
     @Override
     public String toString() {
-        return this.shape +"";
+        return String.valueOf(this.shape);
     }
 }
 class  Flat extends Object{ // 풀
 
-    public Flat(int x, int y, char shape) {
+    public Flat(int x, int y, Shape shape) {
 
         this.x = x;
         this.y = y;
-        this.shape = shape;
+        this.shape = shape.getShape();
     }
 
-    @Override
-    public String toString() {
-        return shape+"";
-    }
 }
 class Tank extends Object{
     Direction direction;
 
-    public Tank(int x, int y ,Direction direction, char shape) {
+    public Tank(int x, int y ,Direction direction, Direction shape) {
         this.x = x;
         this.y = y;
         this.direction = direction;
-        this.shape = shape;
+        this.shape = shape.getShape();
     }
 
     public int getX(){
@@ -424,45 +442,33 @@ class Tank extends Object{
     }
 
 
-    @Override
-    public String toString() {
-        return shape+"";
-    }
+
 }
 
 class BrickWall extends Object{ //돌벽
 
-    public BrickWall(int x, int y, char shape) {
+    public BrickWall(int x, int y, Shape shape) {
         this.x = x;
         this.y = y;
-        this.shape = shape;
+        this.shape = shape.getShape();
     }
-    @Override
-    public String toString() {
-        return shape+"";
-    }
+
 }
 
 class SteelWall extends Object{
-    public SteelWall(int x, int y, char shape) {
+    public SteelWall(int x, int y, Shape shape) {
         this.x = x;
         this.y = y;
-        this.shape = shape;
+        this.shape = shape.getShape();
     }
-    @Override
-    public String toString() {
-        return shape+"";
-    }
+
 }
 class Water extends Object{
 
-    public Water(int x, int y, char shape) {
+    public Water(int x, int y, Shape shape) {
         this.x = x;
         this.y = y;
-        this.shape = shape;
+        this.shape = shape.getShape();
     }
-    @Override
-    public String toString() {
-        return shape+"";
-    }
+
 }
