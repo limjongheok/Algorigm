@@ -128,6 +128,8 @@ class InputClassification{
 }
 
 class InputOrderClassification{
+    private MovieTank movieTank  = MovieTank.getInstance;
+    private ShotTank shotTank = ShotTank.getInstance;
 
     private InputOrderClassification(){
 
@@ -140,25 +142,36 @@ class InputOrderClassification{
     public void command (char order, Tank tank , Map map){
         switch (order){
             case 'U':
-                commandUp(tank,map);
+                movieTank.commandUp(tank,map);
                 break;
 
             case 'D':
-                commandDown(tank,map);
+                movieTank.commandDown(tank,map);
                 break;
             case 'L':
-                commandLeft(tank,map);
+                movieTank.commandLeft(tank,map);
                 break;
             case 'R':
-                commandRight(tank,map);
+                movieTank.commandRight(tank,map);
                 break;
             case'S':
-                commandShoot(tank,map);
+                shotTank.commandShoot(tank,map);
                 break;
         }
     }
 
-    private void commandUp(Tank tank,Map map){
+}
+
+class MovieTank{
+
+    public static MovieTank getInstance = instance();
+    private static MovieTank instance(){
+        return new MovieTank();
+    }
+    private MovieTank(){
+
+    }
+    public void commandUp(Tank tank,Map map){
         int nextX = tank.getX()-1;
         tank.setShape('^');
         tank.setDirection(Direction.up);
@@ -170,9 +183,8 @@ class InputOrderClassification{
 
             }
         }
-
     }
-    private void commandDown(Tank tank, Map map){
+    public void commandDown(Tank tank, Map map){
         int nextX = tank.getX()+1;
         tank.setShape('v');
         tank.setDirection(Direction.down);
@@ -184,13 +196,8 @@ class InputOrderClassification{
 
             }
         }
-
-
-
-
-
     }
-    private void commandLeft(Tank tank, Map map){
+    public void commandLeft(Tank tank, Map map){
         int nextY = tank.getY()-1;
         tank.setShape('<');
         tank.setDirection(Direction.left);
@@ -203,7 +210,7 @@ class InputOrderClassification{
             }
         }
     }
-    private void commandRight(Tank tank, Map map){
+    public void commandRight(Tank tank, Map map){
         int nextY = tank.getY()+1;
         tank.setShape('>');
         tank.setDirection(Direction.right);
@@ -216,7 +223,20 @@ class InputOrderClassification{
         }
     }
 
-    private void commandShoot(Tank tank, Map map){
+}
+
+class ShotTank{
+
+    public static ShotTank getInstance = instance();
+    private ShotTank() {
+    }
+
+    private static ShotTank instance(){
+        return new ShotTank();
+    }
+
+
+    public void commandShoot(Tank tank, Map map){
 
         Direction direction = tank.getDirection();
 
@@ -234,8 +254,8 @@ class InputOrderClassification{
     }
 
     private void upShoot(Tank tank, Map map){
-        int x = getTankX(tank) -1;
-        int y = getTankY(tank);
+        int x = tank.getX() -1;
+        int y = tank.getY();
 
         while(x >=0){
 
@@ -254,8 +274,8 @@ class InputOrderClassification{
 
     private void downShoot(Tank tank, Map map){
 
-        int x = getTankX(tank) +1;
-        int y = getTankY(tank);
+        int x = tank.getX() +1;
+        int y = tank.getY();
 
         while(x < map.getMaxX()){
 
@@ -274,8 +294,8 @@ class InputOrderClassification{
 
     private void leftShoot(Tank tank, Map map){
 
-        int x = getTankX(tank);
-        int y = getTankY(tank)-1;
+        int x = tank.getX();
+        int y = tank.getY()-1;
 
         while(y >= 0){
 
@@ -292,8 +312,8 @@ class InputOrderClassification{
     }
 
     private void rightShoot(Tank tank, Map map){
-        int x = getTankX(tank);
-        int y = getTankY(tank)+1;
+        int x = tank.getX();
+        int y = tank.getY()+1;
         while(y < map.getMaxY()){
 
 
@@ -310,15 +330,7 @@ class InputOrderClassification{
         }
 
     }
-
-    private int getTankX(Tank tank){
-        return tank.getX();
-    }
-    private int getTankY(Tank tank){
-        return tank.getY();
-    }
 }
-
 enum Direction{
     up('^'),
     down('v'),
@@ -435,8 +447,7 @@ class Tank extends Object{
     public void setShape(char shpae){
         this.shape = shpae;
     }
-
-
+    
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
@@ -446,7 +457,6 @@ class Tank extends Object{
 }
 
 class BrickWall extends Object{ //돌벽
-
     public BrickWall(int x, int y, Shape shape) {
         this.x = x;
         this.y = y;
@@ -464,7 +474,6 @@ class SteelWall extends Object{
 
 }
 class Water extends Object{
-
     public Water(int x, int y, Shape shape) {
         this.x = x;
         this.y = y;
