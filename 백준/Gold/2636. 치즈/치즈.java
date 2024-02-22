@@ -27,16 +27,17 @@ public class Main {
 		visited = new boolean[n][m];
 		bfs(0,0); // 밖 치즈 채우기 
 		
-		
 		for(int i=0; i<n; i++) {
 			for(int j=0; j<m; j++) {
 				if(!visited[i][j]) {
 					if(arr[i][j] == 0) {
+				
 						bfs2(i,j); // 안쪽 빈칸 변경
-					
+				
 					}
 				}
 			}
+
 		}
 		
 
@@ -69,34 +70,32 @@ public class Main {
 				}
 			}
 			nam = c;
-	
+			
 			for(int i=0; i<n; i++) { // 변경
 				for(int j=0; j<m; j++) {
 					if(arr[i][j]== 1) {
 						// 상하 좌우 파악 하여 2 로 병경 
-						change(i,j); // 공기랑 접척한 치즈 녹이기 0으로 변경
+						change(i,j);
 						
 					
 					}
 				}
 			}
-
 		
 			visited = new boolean[n][m];
 		
-			for(int i=0; i<n; i++) { // 녹은 치즈 및 안쪽 공기(3) 2로 변경하기 
+			for(int i=0; i<n; i++) {
 				for(int j=0; j<m; j++) {
 					if(!visited[i][j]) {
 						if(arr[i][j] == 0) {
+					
 							bfs(i,j);
+							
 						}
 					}
 				}
 			}
-			
-			count ++;
-			
-		
+            count ++;
 
 		}	
 	
@@ -105,7 +104,7 @@ public class Main {
 		
 	}
 	
-	private static void change(int x, int y) { // 공기랑 접촉 치즈 0으로 변경
+	private static void change(int x, int y) { // 1로 변경
 		for(int i=0; i<4; i++) {
 			int nextX = x + dx[i];
 			int nextY = y + dy[i];
@@ -113,9 +112,7 @@ public class Main {
 			if(nextX >=0 && nextX < n) {
 				if(nextY >=0 && nextY  <m) {
 					   if(arr[nextX][nextY] == 2) {
-						   if(arr[x][y] == 1) {
-							   arr[x][y] = 0;
-						   }
+						   arr[x][y] = 0;
 					   }
 				}
 			}
