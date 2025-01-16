@@ -1,108 +1,93 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
-    private static int[][] arr;
-    private static int n;
-    private static int m;
-    private static List<Nodes> list ;
-    private static int[] chX;
-    private static int[] chY;
 
-    private static boolean[] visited;
-    private static int sum =0;
-    private static int result = Integer.MAX_VALUE;
-    public static void main(String[] args) throws IOException{
+    static int[][] map;
+    static int n, m;
+    static int 전체치킨집수;
+    static int min = Integer.MAX_VALUE;
+
+    static List<Node> 집목록;
+    static List<Node> 치킨집목록;
+
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        StringTokenizer st ;
-        st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
 
-        //1. 입력 n arr[n][n] m 추출 치킨집
-         n = Integer.parseInt(st.nextToken());
-         m = Integer.parseInt(st.nextToken());
+        map = new int[n][n];
+        집목록 = new ArrayList<>();
+        치킨집목록 = new ArrayList<>();
 
-         arr = new int[n][n];
-         list = new ArrayList<>();
-         for(int i=0; i<n; i++){ // n 줄 만큼 입력
-             st = new StringTokenizer(br.readLine());
-             for(int j=0; j<n; j++){
-                 arr[i][j] = Integer.parseInt(st.nextToken());
-                 // 2 일때 추출
-                 if(arr[i][j]==2){
-                     list.add(new Nodes(i,j));
-                 }
-             }
-         }
-         visited = new boolean[list.size()];
-         chX = new int[list.size()];
-         chY = new int[list.size()];
-
-         int count = 0;
-         for(Nodes i: list){
-             int x = i.x;
-             int y = i.y;
-             chX[count] = x;
-             chY[count] = y;
-             count++;
-         }
-         int[] arrX = new int[m];
-         int[] arrY = new int[m];
-
-         dfs(0,0,arrX,arrY);
-         System.out.println(result);
-
-
-    }
-
-
-
-    private static void dfs(int idx,int v, int[] arrX, int[] arrY){
-        if(idx == m){ // 2 개 추출시 멈춤
-            sum = 0;
-            for(int i=0; i<n; i++){
-                for(int j=0; j<n; j++){
-                    if(arr[i][j]==1){
-                        result( i,  j, arrX, arrY); // 결과 구하기
-                    }
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < n; j++) {
+                map[i][j] = Integer.parseInt(st.nextToken());
+                if (map[i][j] == 1) {
+                    집목록.add(new Node(i, j));
+                } else if (map[i][j] == 2) {
+                    치킨집목록.add(new Node(i, j));
                 }
             }
-            result = Math.min(result,sum);
-            return ;
         }
 
-        for(int i=v; i<chX.length; i++){
-            visited[i] = true;
-            arrX[idx] = chX[i];
-            arrY[idx] = chY[i];
-            dfs(idx+1,i+1,arrX,arrY);
-            visited[i] = false;
+        전체치킨집수 = 치킨집목록.size();
+        boolean[] visited = new boolean[전체치킨집수];
+
+        치킨집뽑기(0, 0, visited);
+        System.out.println(min);
+    }
+
+    private static void 치킨집뽑기(int count, int 시작지점, boolean[] visited) {
+        if (count == m) {
+            계산하고최소값업데이트(visited);
+            return;
+        }
+
+        for (int i = 시작지점; i < 전체치킨집수; i++) {
+            if (!visited[i]) {
+                visited[i] = true;
+                치킨집뽑기(count + 1, i + 1, visited);
+                visited[i] = false;
+            }
         }
     }
 
-    private static void result(int x, int y , int[] arrX, int[] arrY){
-        // 최소 길이 구하기
+    private static void 계산하고최소값업데이트(boolean[] visited) {
+        int sum = 0;
 
-        int min = Integer.MAX_VALUE;
-        for(int i=0; i<arrX.length; i++){
-            min = Math.min(Math.abs(x-arrX[i])+Math.abs(y-arrY[i]),min);
+        for (Node 집 : 집목록) {
+            int 최소거리 = Integer.MAX_VALUE;
+            for (int i = 0; i < 전체치킨집수; i++) {
+                if (visited[i]) {
+                    Node 치킨집 = 치킨집목록.get(i);
+                    최소거리 = Math.min(최소거리, Math.abs(집.x - 치킨집.x) + Math.abs(집.y - 치킨집.y));
+                }
+            }
+            sum += 최소거리;
+
+            // 이미 현재 계산 중인 치킨 거리 합이 최소값보다 크면 중단
+            if (sum >= min) {
+                return;
+            }
         }
 
-        sum+=min;
-
-
+        min = Math.min(min, sum);
     }
-}
-class Nodes{
-    int x;
-    int y;
-    public Nodes(int x, int y){
-        this.x=x;
-        this.y=y;
+
+    static class Node {
+        int x, y;
+
+        public Node(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
     }
 }
