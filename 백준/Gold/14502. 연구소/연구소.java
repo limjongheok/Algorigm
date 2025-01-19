@@ -185,7 +185,7 @@ public class Main {
 				visited[i] = true;
 				Node node = list.get(i);
 				map[node.x][node.y] = 1;
-				빈벽뽑기(count+1, i, visited, map);
+				빈벽뽑기(count+1, i+1, visited, map);
 				visited[i] = false;
 				map[node.x][node.y] = 0;
 			}
